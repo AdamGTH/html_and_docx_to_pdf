@@ -1,0 +1,10 @@
+*.exe
+*.txt
+*.spec
+*.docx
+*.pdf
+*.htm
+*.html
+build/
+dist/
+pdfs/
