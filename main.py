@@ -38,19 +38,29 @@ def select_files():
     global paths_tuple, path_this, ilosc, list_names_files
     paths_tuple = askopenfilenames(
         parent=root, filetypes=[
-            ("Text Files", "*.htm"), ("Text Files", "*.html")]
+            ("Text Files", "*.htm"), ("Text Files", "*.html"), ("Text Files", "*.docx"), ("Text Files", "*.txt")]
     )
-    # print(paths_tuple)
+    
     path_this = os.getcwd()
     ilosc = len(paths_tuple)
-    list_names_files = [name[name.find("Badanie"):] for name in paths_tuple]
+    wantedIdxStart = 0
+    for chars in paths_tuple:
+        for i, zn in enumerate(chars):
+            if zn == '/':
+                wantedIdxStart = i
+    
+    wantedIdxEnd = -4
+    
+    if paths_tuple[0].find("html") > 0:
+        wantedIdxEnd = -5
+      
+    list_names_files = [name[wantedIdxStart+1:wantedIdxEnd] for name in paths_tuple]
     btn.configure(state="normal")
     info_lab.configure(text=f"loaded {len(paths_tuple)} files")
     
 
-    for idx, val in enumerate(paths_tuple):
-        text.insert(f"{idx}.0", val[val.find(
-            "Badanie"):val.find("Badanie")+40] + "...\n")
+    for val in list_names_files:
+        text.insert("0.0", val + "\n")
     
      
    
@@ -90,23 +100,17 @@ def to_create():
     for idx, file in enumerate(paths_tuple):
         pdfkit.from_file(
     file,
-    f"pdfs/out{idx}.pdf",
+    f"pdfs/{file[file.find('Badanie') : - 4]}.pdf",
     # verbose=True,
     options={"enable-local-file-access": True},
 )
         progress_bar(idx)
         idx_val = idx
-    
-              
+               
         
     # generowanie zestawienia w pliku .txt i utworzenie pdfa z pliku .txt
     file_name_apply = "WYKAZ NR. PRZEKŁ.PRĄD. - WZORCOWANIE %d.%.2d.%.2d.txt" % (current_time.year, current_time.month, current_time.day)
-    
-    with open(f"{path_to_save}{file_name_apply}", "w+", encoding="utf8") as f:
-        f.write(f"Przebadano {len(list_names_files)} szt\n\n")
-        for line in list_names_files:
-            f.write(line+"\n")
-    
+           
     pdfkit.from_file(f"{path_to_save}{file_name_apply}", "pdfs/Potwierdzenie.pdf", options={"enable-local-file-access": True, "encoding": "utf8"})
     
     # generowanie zbiorczego pliku pdf
@@ -134,7 +138,7 @@ def to_create():
 # Utworzenie okna aplikacji 
 root = Tk()
 root.title("Simple print Example")
-root.geometry("600x500")
+root.geometry("800x500")
 # l = Label(text="Select ur desired file to print", bg="gray")
 # l.pack(fill=X)
 frame_button = Frame(root)
@@ -143,7 +147,7 @@ frame_entry = Frame(root)
 frame_entry.pack(pady=5)
 frame_bar = Frame(root)
 frame_bar.pack(pady=5)
-frame_text = Frame(root)
+frame_text = Frame(root, relief="groove")
 frame_text.pack(pady=5)
 
 btn_select = Button(frame_button,
@@ -200,7 +204,7 @@ bar_val.grid(padx=5, pady=5, column=0, row=0)
 bar.grid(padx=10, pady=10, column=0, row=1)
 
 info_lab = Label(frame_text, font=("Arial Black", "10"), fg="blue", text="No files")
-text = ScrolledText(frame_text, height=10, width=50)
+text = Text(frame_text, wrap='none', bg='black', fg="white")
 
 info_lab.grid(padx=5, pady=5, row=0, column=0)
 text.grid(padx=5, column=0, row=1)
