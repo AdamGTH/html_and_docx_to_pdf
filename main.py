@@ -60,8 +60,7 @@ def select_files():
     
     for val in list_names_files:
         text.insert(INSERT, val + "\n")
-    
-     
+         
    
 def to_create():
     path_to_save = ''
@@ -103,7 +102,6 @@ def to_create():
     for file in list_names_files:
         pdfs_reader.append(PdfReader(open(f"pdfs/{file}.pdf", "rb")))
     
-
     output_pdf = PdfWriter()
     
     for idx, file in enumerate(pdfs_reader):
@@ -142,38 +140,6 @@ btn = Button(frame_button, text="createPDF", width=15,
 
 btn_select.grid(padx=5, pady=5, column=0, row=0)
 btn.grid(padx=5 ,pady=5, column=1, row=0)
-
-nr_oum = Entry(frame_entry, width=30)
-nr_oum.insert(0, "W3/---/%d" % (current_time.year))
-nr_zgl = Entry(frame_entry, width=30)
-
-nr_zgl.insert(0, "Z/%d/%d/%.2d" % (current_time.year,current_time.month,current_time.day-1))
-oum_man = ttk.Combobox(frame_entry, state="readonly", values=oum_mans, width=30)
-emit_man = ttk.Combobox(frame_entry, state="readonly", values=["Adam Masiarz", "Arkadiusz Świerczek", "Marek Lampa"], width=30)
-ilosc_zbadanych = Entry(frame_entry, width=30)
-ilosc_zbadanych.insert(0, "200 szt.")
-data = Entry(frame_entry, width=30)
-data.insert(0, f"%.2d.%d.%d r." % (current_time.day,current_time.month, current_time.year))
-
-nr_oum_label = Label(frame_entry, text="NR OUM:")
-nr_zgl_label = Label(frame_entry, text="NR ZGŁ.:")
-oum_man_label = Label(frame_entry, text="SPRAWDZIŁ:")
-emit_man_label = Label(frame_entry, text="WYKONAŁ:")
-ilosc_zbadanych_label = Label(frame_entry, text="ILOŚĆ:")
-data_label = Label(frame_entry, text="DATA:")
-
-nr_oum_label.grid(pady=5, column=0, row=0)
-nr_oum.grid(pady=5, column=1, row=0)
-nr_zgl_label.grid(pady=5, column=0, row=1)
-nr_zgl.grid(pady=5, column=1, row=1)
-data_label.grid(pady=5, column=0, row=2)
-data.grid(pady=5, column=1, row=2)
-oum_man_label.grid(pady=5, column=0, row=3)
-oum_man.grid(pady=5, column=1, row=3)
-emit_man_label.grid(pady=5, column=0, row=4)
-emit_man.grid(pady=5, column=1, row=4)
-ilosc_zbadanych_label.grid(pady=5, column=0, row=5)
-ilosc_zbadanych.grid(pady=5, column=1, row=5)
 
 bar_val = Label(frame_bar, text="0.0 %")
 bar = ttk.Progressbar(
