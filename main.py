@@ -32,7 +32,7 @@ def progress_bar(actual_iterable):
     bar["value"] = pcnt
     bar_val["text"] = f'{round(bar["value"],2)} %'
     if bar["value"] == 100.0:
-       bar_val["text"] = "Is finished !!!"
+       bar_val["text"] = "Finish !!!"
 
 def select_files():
     global paths_tuple, path_this, ilosc, list_names_files
@@ -58,7 +58,6 @@ def select_files():
     btn.configure(state="normal")
     info_lab.configure(text=f"loaded {len(paths_tuple)} files")
     
-
     for val in list_names_files:
         text.insert("0.0", val + "\n")
     
@@ -77,63 +76,51 @@ def to_create():
                 path_to_save = line.split("=")[1].strip()
             if "path_to_libre_engine" in line:
                 path_to_libre_engine = line.split("=")[1].strip()
-            if "path_to_template" in line:
-                path_to_template = line.split("=")[1].strip()
-    
-    # generowanie potwierdzienia w .docx
-    out_file_doc = "POTWIERDZENIE_WZORCOWANIA-%d.%.2d.%.2d" % (current_time.year, current_time.month, current_time.day)
-    doc_name_docx = f"{out_file_doc}.docx"
-    doc_name_pdf = f"{path_to_save}{out_file_doc}.pdf"
-    doc = DocxTemplate("szablon_potw.docx")
-    context = {"nr_zgloszenia": nr_zgl.get(), "nr_oum": nr_oum.get(), "data": data.get(), "ilosc": ilosc_zbadanych.get(), "osoba_emiter": emit_man.get(), "osoba_oum": oum_man.get()}
-    doc.render(context)
-    doc.save(doc_name_docx)
-    
-    # generowanie pdfa z pliku potwierdzenia generated_doc.docx za pomoca comendy konsoli, dziala tylko z Libre office:
-    # os.system(f"\"C:/Program Files/LibreOffice/program/swriter.exe\" --headless --convert-to pdf --outdir {path_to_save} {doc_name_docx}")
-    commandStrings = [path_to_libre_engine, "--headless", "--convert-to", "pdf", "--outdir", path_to_save, doc_name_docx]
-    # print(" ".join(commandStrings))
-    retCode = subprocess.call(commandStrings)
-    
-    
-    # generowanie pdfow z protokolow .htm
-    for idx, file in enumerate(paths_tuple):
-        pdfkit.from_file(
-    file,
-    f"pdfs/{file[file.find('Badanie') : - 4]}.pdf",
-    # verbose=True,
-    options={"enable-local-file-access": True},
-)
-        progress_bar(idx)
-        idx_val = idx
-               
-        
-    # generowanie zestawienia w pliku .txt i utworzenie pdfa z pliku .txt
-    file_name_apply = "WYKAZ NR. PRZEKŁ.PRĄD. - WZORCOWANIE %d.%.2d.%.2d.txt" % (current_time.year, current_time.month, current_time.day)
-           
-    pdfkit.from_file(f"{path_to_save}{file_name_apply}", "pdfs/Potwierdzenie.pdf", options={"enable-local-file-access": True, "encoding": "utf8"})
-    
-    # generowanie zbiorczego pliku pdf
-    pdfs_reader = []
-    for idx in range(len(paths_tuple)):
-        pdfs_reader.append(PdfReader(open(f"pdfs/out{idx}.pdf", "rb")))
-    pdfs_reader.append(PdfReader(open("pdfs/Potwierdzenie.pdf", "rb")))
-    pdfs_reader.append(PdfReader(open(doc_name_pdf, "rb")))
-        
-    output_pdf = PdfWriter()
-    
-    for idx, file in enumerate(pdfs_reader):
-        for page in file.pages:
-            output_pdf.add_page(page)
-        
-    with open("pdfs/all_doc.pdf", "wb") as out_stream:
-        output_pdf.write(out_stream)
-        idx_val += 1
-    
                 
-    progress_bar(idx_val)
+    if "doc" in paths_tuple[0] or "docx" in paths_tuple[0]:
+        # os.system(f"\"C:/Program Files/LibreOffice/program/swriter.exe\" --headless --convert-to pdf --outdir {path_to_save} {doc_name_docx}")
+        for idx, file in enumerate(paths_tuple):
+            commandStrings = [path_to_libre_engine, "--headless", "--convert-to", "pdf", "--outdir", "pdfs/out/", file]
+            retCode = subprocess.call(commandStrings)
+    
+    else:
+        # generowanie pdfow z protokolow .htm
+        for idx, file in enumerate(paths_tuple):
+            pdfkit.from_file(
+        file,
+        f"pdfs/out{idx}.pdf",
+        # verbose=True,
+        options={"enable-local-file-access": True},
+    )
+            progress_bar(idx)
+            idx_val = idx
+                
+            
+        # generowanie zestawienia w pliku .txt i utworzenie pdfa z pliku .txt
+        file_name_apply = "WYKAZ NR. PRZEKŁ.PRĄD. - WZORCOWANIE %d.%.2d.%.2d.txt" % (current_time.year, current_time.month, current_time.day)
+            
+        pdfkit.from_file(f"{path_to_save}{file_name_apply}", "pdfs/Potwierdzenie.pdf", options={"enable-local-file-access": True, "encoding": "utf8"})
         
-    # os.startfile("Badanie_.txt", "print")
+        # generowanie zbiorczego pliku pdf
+        pdfs_reader = []
+        for idx in range(len(paths_tuple)):
+            pdfs_reader.append(PdfReader(open(f"pdfs/out{idx}.pdf", "rb")))
+        
+            
+        output_pdf = PdfWriter()
+        
+        for idx, file in enumerate(pdfs_reader):
+            for page in file.pages:
+                output_pdf.add_page(page)
+            
+        with open("pdfs/all_doc.pdf", "wb") as out_stream:
+            output_pdf.write(out_stream)
+            idx_val += 1
+        
+                    
+        progress_bar(idx_val)
+            
+        # os.startfile("Badanie_.txt", "print")
 
 # Utworzenie okna aplikacji 
 root = Tk()
