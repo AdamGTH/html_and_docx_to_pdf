@@ -26,13 +26,13 @@ def thread_to_bar():
     th1 = threading.Thread(target=to_create)
     th1.start()
 
-def progress_bar(actual_iterable):
-    global ilosc
-    pcnt = actual_iterable * 100 / ilosc
-    bar["value"] = pcnt
-    bar_val["text"] = f'{round(bar["value"],2)} %'
-    if bar["value"] == 100.0:
-       bar_val["text"] = "Finish !!!"
+# def progress_bar(actual_iterable):
+#     global ilosc
+#     pcnt = actual_iterable * 100 / ilosc
+#     bar["value"] = pcnt
+#     bar_val["text"] = f'{round(bar["value"],2)} %'
+#     if bar["value"] == 100.0:
+#        bar_val["text"] = "Finish !!!"
 
 def select_files():
     global paths_tuple, path_this, ilosc, list_names_files
@@ -81,8 +81,6 @@ def to_create():
         for idx, file in enumerate(paths_tuple):
             commandStrings = [path_to_libre_engine, "--headless", "--convert-to", "pdf", "--outdir", "pdfs/", file]
             retCode = subprocess.call(commandStrings)
-            progress_bar(idx)
-            idx_val = idx
             # add tag using indices for the 
             # part of text to be highlighted
             text.insert(f"{idx+1}.0", "OK! ") 
@@ -100,9 +98,13 @@ def to_create():
         # verbose=True,
         options={"enable-local-file-access": True},
     )
-            progress_bar(idx)
-            idx_val = idx
-             
+            # add tag using indices for the 
+            # part of text to be highlighted
+            text.insert(f"{idx+1}.0", "OK! ") 
+            text.tag_add("start", f"{idx+1}.0", f"{idx+1}.3") 
+            #configuring a tag called start 
+            text.tag_config("start", background="green", 
+                            foreground="white")      
                 
     # generowanie zbiorczego pliku pdf
     pdfs_reader = []
@@ -118,9 +120,7 @@ def to_create():
     with open("pdfs/all_doc.pdf", "wb") as out_stream:
         output_pdf.write(out_stream)
         idx_val += 1
-    
-    progress_bar(idx_val)
-            
+                  
     # os.startfile("Badanie_.txt", "print")
 
 # Utworzenie okna aplikacji 
@@ -147,17 +147,6 @@ btn = Button(frame_button, text="createPDF", width=15,
 
 btn_select.grid(padx=5, pady=5, column=0, row=0)
 btn.grid(padx=5 ,pady=5, column=1, row=0)
-
-bar_val = Label(frame_bar, text="0.0 %")
-bar = ttk.Progressbar(
-    frame_bar,
-    orient="horizontal",
-    mode="determinate",
-    length=300,
-)
-
-bar_val.grid(padx=5, pady=5, column=0, row=0)
-bar.grid(padx=10, pady=10, column=0, row=1)
 
 info_lab = Label(frame_text, font=("Arial Black", "10"), fg="blue", text="No files")
 text = Text(frame_text, wrap='none', bg='black', fg="white")
