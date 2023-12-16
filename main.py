@@ -13,45 +13,6 @@ from docxtpl import DocxTemplate
 from pdf2docx import Converter
 
 
-# def thread_to_bar():
-#     th1 = threading.Thread(target=to_create)
-#     th1.start()
-
-# def select_files():
-#     global paths_tuple, path_this, ilosc, list_names_files
-#     paths_tuple = askopenfilenames(
-#         parent=root, filetypes=[
-#             ("Text Files", "*.htm"), ("Text Files", "*.html"), ("Text Files", "*.docx"), ("Text Files", "*.txt")]
-#     )
-    
-#     path_this = os.getcwd()
-#     ilosc = len(paths_tuple)
-#     wantedIdxStart = 0
-#     for chars in paths_tuple:
-#         for i, zn in enumerate(chars):
-#             if zn == '/':
-#                 wantedIdxStart = i
-    
-#     wantedIdxEnd = -4
-    
-#     if paths_tuple[0].find("html") > 0 or paths_tuple[0].find("docx") > 0:
-#         wantedIdxEnd = -5
-      
-#     list_names_files = [name[wantedIdxStart+1:wantedIdxEnd] for name in paths_tuple]
-#     btn.configure(state="normal")
-#     info_lab.configure(text=f"loaded {len(paths_tuple)} files")
-    
-#     for val in list_names_files:
-#         text.insert(INSERT, val + "\n")
-    
-   
-
-        
-                  
-    # os.startfile("Badanie_.txt", "print")
-
-# Utworzenie okna aplikacji 
-
 class WindowClass(Tk):
     paths_tuple = ''
     path_this = ''
@@ -165,35 +126,6 @@ class WindowClass(Tk):
         self.text.tag_config("start", background="green", 
                         foreground="white")
 
-# root = Tk()
-# root.title("Simple print Example")
-# root.geometry("800x500")
-# # l = Label(text="Select ur desired file to print", bg="gray")
-# # l.pack(fill=X)
-# frame_button = Frame(root)
-# frame_button.pack(pady=5)
-# frame_text = Frame(root, relief="groove")
-# frame_text.pack(pady=5)
-
-# btn_select = Button(frame_button,
-#     text="Select File", width=15, bg="dark green", command=select_files
-# )
-# btn = Button(frame_button, text="createPDF", width=15,
-#              command=thread_to_bar, state="disabled")
-
-
-# btn_select.grid(padx=5, pady=5, column=0, row=0)
-# btn.grid(padx=5 ,pady=5, column=1, row=0)
-
-# info_lab = Label(frame_text, font=("Arial Black", "10"), fg="blue", text="No files")
-# text = Text(frame_text, wrap='none', bg='black', fg="white")
-
-# info_lab.grid(padx=5, pady=5, row=0, column=0)
-# text.grid(padx=5, column=0, row=1)
-
-
-
-# root.mainloop()
 
 main_win = WindowClass()
 main_win.mainloop()
