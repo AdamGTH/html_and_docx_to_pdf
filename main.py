@@ -60,7 +60,7 @@ def select_files():
     
     for val in list_names_files:
         text.insert(INSERT, val + "\n")
-         
+    
    
 def to_create():
     path_to_save = ''
@@ -83,6 +83,13 @@ def to_create():
             retCode = subprocess.call(commandStrings)
             progress_bar(idx)
             idx_val = idx
+            # add tag using indices for the 
+            # part of text to be highlighted
+            text.insert(f"{idx+1}.0", "OK! ") 
+            text.tag_add("start", f"{idx+1}.0", f"{idx+1}.3") 
+            #configuring a tag called start 
+            text.tag_config("start", background="green", 
+                            foreground="white") 
     
     else:
         # generowanie pdfow z protokolow .htm
