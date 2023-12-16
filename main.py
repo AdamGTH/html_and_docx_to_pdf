@@ -76,11 +76,15 @@ class WindowClass(Tk):
       
     def to_create(self):
         # pobieranie danych z pliku config
-        with open("config.txt", "r") as fr:
-            for line in fr:
-                if "path_to_libre_engine" in line:
-                    path_to_libre_engine = line.split("=")[1].strip()
-                    
+        try:
+            with open("config.txt", "r") as fr:
+                for line in fr:
+                    if "path_to_libre_engine" in line:
+                        path_to_libre_engine = line.split("=")[1].strip()
+        except FileNotFoundError:
+            showerror("WARNING", "NOT FOUND config.txt with path to swriter.exe")
+            path_to_libre_engine = "C:/Program Files/LibreOffice/program/swriter.exe"
+                 
         if "doc" in paths_tuple[0] or "docx" in paths_tuple[0]:
             # os.system(f"\"C:/Program Files/LibreOffice/program/swriter.exe\" --headless --convert-to pdf --outdir {path_to_save} {doc_name_docx}")
             for idx, file in enumerate(paths_tuple):
