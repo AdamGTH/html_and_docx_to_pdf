@@ -80,7 +80,7 @@ def to_create():
     if "doc" in paths_tuple[0] or "docx" in paths_tuple[0]:
         # os.system(f"\"C:/Program Files/LibreOffice/program/swriter.exe\" --headless --convert-to pdf --outdir {path_to_save} {doc_name_docx}")
         for idx, file in enumerate(paths_tuple):
-            commandStrings = [path_to_libre_engine, "--headless", "--convert-to", "pdf", "--outdir", "pdfs/out/", file]
+            commandStrings = [path_to_libre_engine, "--headless", "--convert-to", "pdf", "--outdir", "pdfs/", file]
             retCode = subprocess.call(commandStrings)
     
     else:
@@ -94,33 +94,27 @@ def to_create():
     )
             progress_bar(idx)
             idx_val = idx
+             
                 
+    # generowanie zbiorczego pliku pdf
+    pdfs_reader = []
+    for file in list_names_files:
+        pdfs_reader.append(PdfReader(open(f"pdfs/{file}.pdf", "rb")))
+    
+
+    output_pdf = PdfWriter()
+    
+    for idx, file in enumerate(pdfs_reader):
+        for page in file.pages:
+            output_pdf.add_page(page)
+
+    with open("pdfs/all_doc.pdf", "wb") as out_stream:
+        output_pdf.write(out_stream)
+        idx_val += 1
+    
+    progress_bar(idx_val)
             
-        # generowanie zestawienia w pliku .txt i utworzenie pdfa z pliku .txt
-        file_name_apply = "WYKAZ NR. PRZEKŁ.PRĄD. - WZORCOWANIE %d.%.2d.%.2d.txt" % (current_time.year, current_time.month, current_time.day)
-            
-        pdfkit.from_file(f"{path_to_save}{file_name_apply}", "pdfs/Potwierdzenie.pdf", options={"enable-local-file-access": True, "encoding": "utf8"})
-        
-        # generowanie zbiorczego pliku pdf
-        pdfs_reader = []
-        for idx in range(len(paths_tuple)):
-            pdfs_reader.append(PdfReader(open(f"pdfs/out{idx}.pdf", "rb")))
-        
-            
-        output_pdf = PdfWriter()
-        
-        for idx, file in enumerate(pdfs_reader):
-            for page in file.pages:
-                output_pdf.add_page(page)
-            
-        with open("pdfs/all_doc.pdf", "wb") as out_stream:
-            output_pdf.write(out_stream)
-            idx_val += 1
-        
-                    
-        progress_bar(idx_val)
-            
-        # os.startfile("Badanie_.txt", "print")
+    # os.startfile("Badanie_.txt", "print")
 
 # Utworzenie okna aplikacji 
 root = Tk()
