@@ -16,23 +16,11 @@ paths_tuple = ''
 path_this = ''
 ilosc = 0
 list_names_files = []
-current_time = datetime.datetime.now()
-oum_mans = []
-with open("urzednicy.txt", "r", encoding="utf8") as fu:
-    for man in fu:
-        oum_mans.append(man)
+
 
 def thread_to_bar():
     th1 = threading.Thread(target=to_create)
     th1.start()
-
-# def progress_bar(actual_iterable):
-#     global ilosc
-#     pcnt = actual_iterable * 100 / ilosc
-#     bar["value"] = pcnt
-#     bar_val["text"] = f'{round(bar["value"],2)} %'
-#     if bar["value"] == 100.0:
-#        bar_val["text"] = "Finish !!!"
 
 def select_files():
     global paths_tuple, path_this, ilosc, list_names_files
