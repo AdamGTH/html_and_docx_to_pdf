@@ -51,7 +51,7 @@ def select_files():
     
     wantedIdxEnd = -4
     
-    if paths_tuple[0].find("html") > 0:
+    if paths_tuple[0].find("html") > 0 or paths_tuple[0].find("docx") > 0:
         wantedIdxEnd = -5
       
     list_names_files = [name[wantedIdxStart+1:wantedIdxEnd] for name in paths_tuple]
@@ -59,7 +59,7 @@ def select_files():
     info_lab.configure(text=f"loaded {len(paths_tuple)} files")
     
     for val in list_names_files:
-        text.insert("0.0", val + "\n")
+        text.insert(INSERT, val + "\n")
     
      
    
@@ -82,13 +82,15 @@ def to_create():
         for idx, file in enumerate(paths_tuple):
             commandStrings = [path_to_libre_engine, "--headless", "--convert-to", "pdf", "--outdir", "pdfs/", file]
             retCode = subprocess.call(commandStrings)
+            progress_bar(idx)
+            idx_val = idx
     
     else:
         # generowanie pdfow z protokolow .htm
         for idx, file in enumerate(paths_tuple):
             pdfkit.from_file(
         file,
-        f"pdfs/out{idx}.pdf",
+        f"pdfs/{list_names_files[idx]}.pdf",
         # verbose=True,
         options={"enable-local-file-access": True},
     )
