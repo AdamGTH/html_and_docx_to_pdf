@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilenames
-from tkinter.messagebox import showerror
+from tkinter.messagebox import showerror, showinfo
 from tkinter import ttk
 import pdfkit
 import os
@@ -18,6 +18,7 @@ class WindowClass(Tk):
     path_this = ''
     ilosc = 0
     list_names_files = []
+    path_to_libre_engine = ""
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -48,64 +49,70 @@ class WindowClass(Tk):
         self.text.grid(padx=5, column=0, row=1)
         
     def select_files(self):
-        global paths_tuple, path_this, ilosc, list_names_files
-        paths_tuple = askopenfilenames(
+        self.paths_tuple = askopenfilenames(
             parent=self, filetypes=[
                 ("Text Files", "*.htm"), ("Text Files", "*.html"), ("Text Files", "*.docx"), ("Text Files", "*.txt")]
         )
         
-        path_this = os.getcwd()
-        ilosc = len(paths_tuple)
+        self.path_this = os.getcwd()
+        self.ilosc = len(self.paths_tuple)
         wantedIdxStart = 0
-        for chars in paths_tuple:
+        for chars in self.paths_tuple:
             for i, zn in enumerate(chars):
                 if zn == '/':
                     wantedIdxStart = i
         
         wantedIdxEnd = -4
         
-        if paths_tuple[0].find("html") > 0 or paths_tuple[0].find("docx") > 0:
+        if self.paths_tuple[0].find("html") > 0 or self.paths_tuple[0].find("docx") > 0:
             wantedIdxEnd = -5
         
-        list_names_files = [name[wantedIdxStart+1:wantedIdxEnd] for name in paths_tuple]
+        list_names_files = [name[wantedIdxStart+1:wantedIdxEnd] for name in self.paths_tuple]
         self.btn.configure(state="normal")
-        self.info_lab.configure(text=f"loaded {len(paths_tuple)} files")
+        self.info_lab.configure(text=f"loaded {len(self.paths_tuple)} files")
         
         for val in list_names_files:
             self.text.insert(INSERT, val + "\n")
-      
-    def to_create(self):
+            
         # pobieranie danych z pliku config
         try:
             with open("config.txt", "r") as fr:
                 for line in fr:
                     if "path_to_libre_engine" in line:
-                        path_to_libre_engine = line.split("=")[1].strip()
+                        self.path_to_libre_engine = line.split("=")[1].strip()
         except FileNotFoundError:
-            showerror("WARNING", "NOT FOUND config.txt with path to swriter.exe")
-            path_to_libre_engine = "C:/Program Files/LibreOffice/program/swriter.exe"
-                 
-        if "doc" in paths_tuple[0] or "docx" in paths_tuple[0]:
+            showinfo("MESSAGE", "NOT FOUND config.txt with path to swriter.exe, used default path: C:/Program Files/LibreOffice/program/swriter.exe")
+            self.path_to_libre_engine = "C:/Program Files/LibreOffice/program/swriter.exe"
+      
+    def to_create(self):
+                         
+        if "doc" in self.paths_tuple[0] or "docx" in self.paths_tuple[0]:
             # os.system(f"\"C:/Program Files/LibreOffice/program/swriter.exe\" --headless --convert-to pdf --outdir {path_to_save} {doc_name_docx}")
-            for idx, file in enumerate(paths_tuple):
-                commandStrings = [path_to_libre_engine, "--headless", "--convert-to", "pdf", "--outdir", "pdfs/", file]
-                retCode = subprocess.call(commandStrings)
-                self.add_progress_to_text(idx)
+            for idx, file in enumerate(self.paths_tuple):
+                commandStrings = [self.path_to_libre_engine, "--headless", "--convert-to", "pdf", "--outdir", "pdfs/", file]
+                try:
+                    retCode = subprocess.call(commandStrings)
+                    self.add_progress_to_text(idx)
+                except:
+                    showerror("WARNING !", f"{retCode}")
         
         else:
             # generowanie pdfow z protokolow .htm
-            for idx, file in enumerate(paths_tuple):
-                pdfkit.from_file(
-            file,
-            f"pdfs/{list_names_files[idx]}.pdf",
-            # verbose=True,
-            options={"enable-local-file-access": True},
-        )
-                self.add_progress_to_text(idx)   
+            for idx, file in enumerate(self.paths_tuple):
+                try:
+                    pdfkit.from_file(
+                file,
+                f"pdfs/{self.list_names_files[idx]}.pdf",
+                # verbose=True,
+                options={"enable-local-file-access": True},
+            )
+                    self.add_progress_to_text(idx)
+                except:
+                    showerror("WARNING !", "Sometning is impossible to do !!!")   
                     
         # generowanie zbiorczego pliku pdf
         pdfs_reader = []
-        for file in list_names_files:
+        for file in self.list_names_files:
             pdfs_reader.append(PdfReader(open(f"pdfs/{file}.pdf", "rb")))
         
         output_pdf = PdfWriter()
