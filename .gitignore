@@ -1,3 +1,5 @@
+create_pdf_files.py
+example.py
 *.exe
 *.txt
 *.spec
@@ -5,8 +7,6 @@
 *.pdf
 *.htm
 *.html
-./create_pdf_files.py
-./example.py
 build/
 dist/
 pdfs/
