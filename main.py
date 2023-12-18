@@ -1,16 +1,16 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilenames
 from tkinter.messagebox import showerror, showinfo
-from tkinter import ttk
+# from tkinter import ttk
 import pdfkit
 import os
 import subprocess
 from PyPDF2 import PdfWriter, PdfReader
 import threading
-import datetime
-from tkinter.scrolledtext import ScrolledText
-from docxtpl import DocxTemplate
-from pdf2docx import Converter
+# import datetime
+# from tkinter.scrolledtext import ScrolledText
+# from docxtpl import DocxTemplate
+# from pdf2docx import Converter
 
 
 class WindowClass(Tk):
