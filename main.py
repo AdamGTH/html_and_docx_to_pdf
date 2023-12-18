@@ -23,7 +23,7 @@ class WindowClass(Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
-        self.geometry("650x450")
+        self.geometry("650x500")
         self.configure(bg="gray")
         self.title("Convert to Pdf from .docx and .html")
         
