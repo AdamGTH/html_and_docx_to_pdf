@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilenames
 from tkinter.messagebox import showerror, showinfo
-# from tkinter import ttk
 import pdfkit
 import os
 import subprocess
