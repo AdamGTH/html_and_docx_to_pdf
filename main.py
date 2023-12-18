@@ -23,7 +23,7 @@ class WindowClass(Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
-        self.geometry("800x500")
+        self.geometry("650x450")
         self.configure(bg="gray")
         self.title("Convert to Pdf from .docx and .html")
         
@@ -33,10 +33,10 @@ class WindowClass(Tk):
         self.frame_text.pack(pady=5)
         
         self.btn_select = Button(self.frame_button,
-        text="Select Files", width=15, bg="dark green", command=self.select_files
+        text="SELECT FILES", width=15, command=self.select_files
         )
         
-        self.btn = Button(self.frame_button, text="Make Pdf", width=15,
+        self.btn = Button(self.frame_button, text="MAKE PDF", width=15,
                 command=self.thread_to_bar, state="disabled")
 
         self.btn_select.grid(padx=5, pady=5, column=0, row=0)
@@ -67,11 +67,11 @@ class WindowClass(Tk):
         if self.paths_tuple[0].find("html") > 0 or self.paths_tuple[0].find("docx") > 0:
             wantedIdxEnd = -5
         
-        list_names_files = [name[wantedIdxStart+1:wantedIdxEnd] for name in self.paths_tuple]
+        self.list_names_files = [name[wantedIdxStart+1:wantedIdxEnd] for name in self.paths_tuple]
         self.btn.configure(state="normal")
         self.info_lab.configure(text=f"loaded {len(self.paths_tuple)} files")
         
-        for val in list_names_files:
+        for val in self.list_names_files:
             self.text.insert(INSERT, val + "\n")
             
         # pobieranie danych z pliku config
@@ -108,7 +108,8 @@ class WindowClass(Tk):
             )
                     self.add_progress_to_text(idx)
                 except:
-                    showerror("WARNING !", "Sometning is impossible to do !!!")   
+                    showerror("WARNING !", "Sometning is impossible to do !!!")
+                    return   
                     
         # generowanie zbiorczego pliku pdf
         pdfs_reader = []
