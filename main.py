@@ -85,7 +85,7 @@ class WindowClass(Tk):
             self.path_to_libre_engine = "C:/Program Files/LibreOffice/program/swriter.exe"
       
     def to_create(self):
-                         
+        subprocess.call(["mkdir", "pdfs"])              
         if "doc" in self.paths_tuple[0] or "docx" in self.paths_tuple[0]:
             # os.system(f"\"C:/Program Files/LibreOffice/program/swriter.exe\" --headless --convert-to pdf --outdir {path_to_save} {doc_name_docx}")
             for idx, file in enumerate(self.paths_tuple):
